@@ -1,6 +1,6 @@
 package com.example.ui.role
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.ui.theme.isAppInDarkTheme as isSystemInDarkTheme
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

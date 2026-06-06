@@ -3,7 +3,7 @@ package com.example.ui.student
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.ui.theme.isAppInDarkTheme as isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -13,7 +13,11 @@ import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.outlined.Calculate
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Functions
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -77,33 +81,53 @@ fun StudentLessonsScreen(
             item {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     Text(
-                        text = "বর্তমান পাঠ / Current Lesson",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = LessonPrimaryText
+                        text = "Lessons",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LessonBlueText
+                    )
+                    Text(
+                        text = "পাঠসমূহ",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LessonBlueText
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LessonsHeroSection()
                 }
             }
+            
             item {
-                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                    Text(
-                        text = "আপনার পাঠসমূহ / Your Lessons",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = LessonBlueText
-                    )
+                Column {
+                    Text("Recently Viewed", fontSize = 18.sp, fontWeight = FontWeight.Medium, color = LessonBlueText, modifier = Modifier.padding(horizontal = 16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    androidx.compose.foundation.lazy.LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        item {
+                            RecentlyViewedItem(titleBn = "বীজগণিত: সূত্রাবলি", titleEn = "Algebra Formulas", icon = Icons.Outlined.Description, progress = 0.6f)
+                        }
+                        item {
+                            RecentlyViewedItem(titleBn = "পদার্থবিদ্যা: গতি", titleEn = "Physics: Motion", icon = Icons.Outlined.Science, progress = 0.2f)
+                        }
+                    }
                 }
             }
+
+            item {
+                androidx.compose.foundation.lazy.LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    item { FilterChip(selected = true, onClick = {}, label = { Text("All Subjects", color = Color.White) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = LessonBlueText, selectedLabelColor = Color.White), shape = CircleShape, border = null) }
+                    item { FilterChip(selected = false, onClick = {}, label = { Text("Mathematics", color = LessonBlueText) }, shape = CircleShape, border = null, colors = FilterChipDefaults.filterChipColors(containerColor = Color(0xFFEEEEEE))) }
+                    item { FilterChip(selected = false, onClick = {}, label = { Text("Science", color = LessonBlueText) }, shape = CircleShape, border = null, colors = FilterChipDefaults.filterChipColors(containerColor = Color(0xFFEEEEEE))) }
+                }
+            }
+
             item {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    LessonItem(titleBn = "বীজগণিত: সূত্রাবলি", titleEn = "Algebra: Formulas", pages = "15", onClick = onNavigateToLesson)
-                    LessonItem(titleBn = "পদার্থবিজ্ঞান: গতির নিয়ম", titleEn = "Physics: Laws of Motion", pages = "24", onClick = onNavigateToLesson)
-                    LessonItem(titleBn = "বাংলা ব্যাকরণ: কারক", titleEn = "Bangla Grammar: Cases", pages = "12", onClick = onNavigateToLesson)
+                    LessonItem(titleBn = "বীজগণিত: সূত্রাবলি", titleEn = "Algebra: Formulas", iconBgColor = Color(0xFFC7D2FE), iconColor = Color(0xFF4F46E5), icon = Icons.Outlined.Description, onClick = onNavigateToLesson)
+                    LessonItem(titleBn = "পাটিগণিত: ভগ্নাংশ", titleEn = "Arithmetic: Fractions", iconBgColor = Color(0xFFFDE68A), iconColor = Color(0xFFD97706), icon = Icons.Outlined.Calculate, onClick = onNavigateToLesson)
+                    LessonItem(titleBn = "ত্রিকোণমিতি: বেসিক", titleEn = "Trigonometry: Basics", iconBgColor = Color(0xFFFECDD3), iconColor = Color(0xFFE11D48), icon = Icons.Outlined.Functions, onClick = onNavigateToLesson)
                 }
             }
         }
@@ -115,105 +139,124 @@ fun LessonsHeroSection() {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(32.dp),
-        color = LessonHeroBg,
-        shadowElevation = 4.dp
+        color = Color(0xFF5A5E8D),
+        shadowElevation = 0.dp
     ) {
-        Box {
-            // Background decor
-            Box(modifier = Modifier.align(Alignment.Center).offset(x = 24.dp).size(120.dp).border(2.dp, Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) {
-                Icon(Icons.Outlined.Description, contentDescription = null, tint = Color.White.copy(alpha = 0.8f), modifier = Modifier.size(48.dp))
-            }
-
-            Column(
-                modifier = Modifier.padding(24.dp)
+        Column(
+            modifier = Modifier.padding(24.dp)
+        ) {
+            Surface(
+                color = Color.White.copy(alpha = 0.15f),
+                shape = CircleShape
             ) {
                 Text(
-                    "MATH - GEOMETRY",
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    "জ্যামিতি: ত্রিভুজের\nবৈশিষ্ট্য",
-                    color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 36.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    "Geometry: Properties of Triangles",
+                    "CURRENT LESSON",
                     color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 14.sp
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                 )
-                Spacer(modifier = Modifier.height(24.dp))
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(containerColor = LessonTeal, contentColor = Color.White),
-                        contentPadding = PaddingValues(horizontal = 32.dp, vertical = 14.dp)
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Read Now", fontWeight = FontWeight.Bold)
-                    }
-                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "জ্যামিতি: ত্রিভুজের\nবৈশিষ্ট্য",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 32.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                "Geometry: Properties of Triangles",
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(containerColor = LessonTeal, contentColor = Color.White),
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
+            ) {
+                Text("Read Now", fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null, modifier = Modifier.size(16.dp))
             }
         }
     }
 }
 
 @Composable
-fun LessonItem(titleBn: String, titleEn: String, pages: String, onClick: () -> Unit) {
+fun RecentlyViewedItem(titleBn: String, titleEn: String, icon: androidx.compose.ui.graphics.vector.ImageVector, progress: Float) {
+    Surface(
+        modifier = Modifier.width(160.dp),
+        shape = RoundedCornerShape(24.dp),
+        color = LessonCardBg,
+        shadowElevation = 0.dp,
+        border = BorderStroke(1.dp, LessonBorder)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Box(
+                modifier = Modifier.size(40.dp).background(LessonBorder, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, contentDescription = null, tint = LessonBlueText, modifier = Modifier.size(20.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(titleBn, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = LessonPrimaryText)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(titleEn, fontSize = 12.sp, color = LessonSecondaryText)
+            Spacer(modifier = Modifier.height(16.dp))
+            LinearProgressIndicator(
+                progress = { progress },
+                modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
+                color = LessonBlueText,
+                trackColor = LessonBorder
+            )
+        }
+    }
+}
+
+@Composable
+fun LessonItem(titleBn: String, titleEn: String, iconBgColor: Color, iconColor: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
+        shape = RoundedCornerShape(percent = 50),
         color = LessonCardBg,
-        shadowElevation = 2.dp
+        border = BorderStroke(1.dp, LessonBorder),
+        shadowElevation = 0.dp
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(LessonLavender.copy(alpha = 0.5f)),
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(iconBgColor),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Outlined.Description, contentDescription = null, tint = LessonBlueText, modifier = Modifier.size(40.dp))
+                Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(28.dp))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(titleBn, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = LessonBlueText)
+                Text(titleBn, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = LessonPrimaryText)
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(titleEn, fontSize = 12.sp, color = LessonPrimaryText, fontWeight = FontWeight.Medium)
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null, tint = LessonSecondaryText, modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("$pages Pages", fontSize = 12.sp, color = LessonSecondaryText, fontWeight = FontWeight.Medium)
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
-                    Button(
-                        onClick = onClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = LessonTeal, contentColor = Color.White),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp)
-                    ) {
-                        Text("Read Now", fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                    }
-                }
+                Text(titleEn, fontSize = 14.sp, color = LessonSecondaryText, fontWeight = FontWeight.Medium)
             }
+            Spacer(modifier = Modifier.width(12.dp))
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(LessonBorder),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.PlayArrow, contentDescription = null, tint = LessonSecondaryText, modifier = Modifier.size(24.dp))
+            }
+            Spacer(modifier = Modifier.width(8.dp))
         }
     }
 }

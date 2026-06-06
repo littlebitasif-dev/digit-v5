@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.ui.theme.isAppInDarkTheme as isSystemInDarkTheme
 import com.example.ui.components.DigitTabHeader
 import androidx.compose.material.icons.outlined.Notifications
 
@@ -395,7 +395,7 @@ fun RecommendedItem(
     contentColor: Color,
     badgeBgColor: Color
 ) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val adjustedIconBg = if (isDark) contentColor.copy(alpha = 0.2f) else iconBgColor
     val adjustedBadgeBg = if (isDark) contentColor.copy(alpha = 0.2f) else badgeBgColor
     val adjustedContentColor = if (isDark) {

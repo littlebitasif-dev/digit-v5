@@ -1,14 +1,35 @@
 package com.example.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.isSystemInDarkTheme as systemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+
+enum class ThemeMode { SYSTEM, LIGHT, DARK }
+enum class AppLanguage { BENGALI, ENGLISH }
+
+object AppSettings {
+    var themeMode by mutableStateOf(ThemeMode.SYSTEM)
+    var appLanguage by mutableStateOf(AppLanguage.BENGALI)
+}
+
+@Composable
+fun isAppInDarkTheme(): Boolean {
+    return when (AppSettings.themeMode) {
+        ThemeMode.SYSTEM -> systemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+}
+
 
 private val DarkColorScheme =
   darkColorScheme(
@@ -66,7 +87,7 @@ private val LightColorScheme =
 
 @Composable
 fun MyApplicationTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
+  darkTheme: Boolean = isAppInDarkTheme(),
   // Dynamic color is available on Android 12+
   dynamicColor: Boolean = false,
   content: @Composable () -> Unit,

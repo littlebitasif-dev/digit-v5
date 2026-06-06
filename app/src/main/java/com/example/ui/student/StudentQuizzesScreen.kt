@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.ui.theme.isAppInDarkTheme as isSystemInDarkTheme
 import com.example.ui.components.DigitTabHeader
 import androidx.compose.material.icons.outlined.Notifications
 
@@ -298,7 +298,7 @@ fun GameCard(
         shape = RoundedCornerShape(32.dp),
         color = CardBg,
         shadowElevation = 0.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (androidx.compose.foundation.isSystemInDarkTheme()) Color(0xFF33353A) else Color(0xFFE1E3E4))
+        border = androidx.compose.foundation.BorderStroke(1.dp, if (com.example.ui.theme.isAppInDarkTheme()) Color(0xFF33353A) else Color(0xFFE1E3E4))
     ) {
         Box {
             // Background decor
@@ -306,7 +306,7 @@ fun GameCard(
                 .align(Alignment.TopEnd)
                 .size(128.dp)
                 .clip(RoundedCornerShape(bottomStart = 100.dp))
-                .background(if (androidx.compose.foundation.isSystemInDarkTheme()) iconColor.copy(alpha = 0.1f) else iconBgColor.copy(alpha = 0.5f))
+                .background(if (com.example.ui.theme.isAppInDarkTheme()) iconColor.copy(alpha = 0.1f) else iconBgColor.copy(alpha = 0.5f))
             )
 
             Column(

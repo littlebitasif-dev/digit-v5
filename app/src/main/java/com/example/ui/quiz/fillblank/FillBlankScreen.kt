@@ -52,7 +52,7 @@ fun FillBlankScreen(
     viewModel: FillBlankViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val currentBgColor = if (isDark) Color(0xFF121212) else ScreenBgColor
 
     Scaffold(
@@ -79,7 +79,7 @@ fun GameContent(
     viewModel: FillBlankViewModel,
     onNavigateBack: () -> Unit
 ) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val currentTitleColor = if (isDark) Color(0xFFD8E1FF) else TitlePurple
     val currentChipBg = if (isDark) Color(0xFF2A2A2A) else LightChipBg
     val currentActionBg = if (isDark) Color(0xFF4DB6AC) else ActionGreen
@@ -244,7 +244,7 @@ fun GameContent(
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                val textColor = if (androidx.compose.foundation.isSystemInDarkTheme() && iconColor == ErrorColor) Color.White else iconColor as Color
+                val textColor = if (com.example.ui.theme.isAppInDarkTheme() && iconColor == ErrorColor) Color.White else iconColor as Color
                 Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(icon as androidx.compose.ui.graphics.vector.ImageVector, contentDescription = null, tint = iconColor as Color)
                     Spacer(modifier = Modifier.width(12.dp))
@@ -257,7 +257,7 @@ fun GameContent(
 
 @Composable
 fun StatChip(icon: androidx.compose.ui.graphics.vector.ImageVector, iconColor: Color, text: String) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val bg = if (isDark) Color(0xFF2A2A2A) else LightChipBg
     val textColor = if (isDark) Color(0xFFE5E7EB) else Color(0xFF4B5563)
     
@@ -288,7 +288,7 @@ fun ActionPill(
     enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val disabledBgColor = if (isDark) Color(0xFF2A2A2A) else LightChipBg
     val disabledTextColor = if (isDark) Color(0xFF6B7280) else Color(0xFF9CA3AF)
 
@@ -365,7 +365,7 @@ fun PillTextField(
     status: BlankStatus,
     enabled: Boolean
 ) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val bg = if (isDark) Color(0xFF2A2A2A) else LightChipBg
     val textCol = if (isDark) Color.White else Color.Black
     val pCol = if (isDark) Color(0xFFE5E7EB) else Color(0xFF1F2937)
@@ -423,7 +423,7 @@ fun PillTextField(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun QuestionCard(uiState: GameUiState, viewModel: FillBlankViewModel) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val cardBg = if (isDark) Color(0xFF1E1E1E) else Color.White
     val textColor = if (isDark) Color.White else Color(0xFF1F2937)
 
@@ -502,7 +502,7 @@ fun QuestionCard(uiState: GameUiState, viewModel: FillBlankViewModel) {
 
 @Composable
 fun SummaryScreen(uiState: GameUiState, onReplay: () -> Unit) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -541,7 +541,7 @@ fun SummaryScreen(uiState: GameUiState, onReplay: () -> Unit) {
 
 @Composable
 fun StatCard(label: String, value: String, modifier: Modifier = Modifier) {
-    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val isDark = com.example.ui.theme.isAppInDarkTheme()
     val bg = if (isDark) Color(0xFF1E1E1E) else Color.White
     val borderCol = if (isDark) Color(0xFF2A2A2A) else Color(0xFFE5E7EB)
     

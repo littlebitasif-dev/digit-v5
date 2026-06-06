@@ -436,20 +436,20 @@ fun WordOfTheDayCard() {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.weight(1f))
         Text("Learn", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color.White)
         Text("শেখা • Verb", fontSize = 16.sp, color = Color.White.copy(alpha = 0.9f))
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
         Surface(
             color = Color.White.copy(alpha = 0.1f),
             shape = RoundedCornerShape(24.dp),
             border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp)) {
                 Text("I want to learn something new every day.", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.White)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("আমি প্রতিদিন নতুন কিছু শিখতে চাই।", fontSize = 12.sp, color = Color.White.copy(alpha = 0.9f))
+                Spacer(modifier = Modifier.height(6.dp))
+                Text("আমি প্রতিদিন নতুন কিছু শিখতে চাই।", fontSize = 14.sp, color = Color.White.copy(alpha = 0.9f))
             }
         }
     }

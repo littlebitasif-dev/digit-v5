@@ -2,7 +2,7 @@ package com.example.ui.student
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.ui.theme.isAppInDarkTheme as isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -22,6 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.Dialog
+import com.example.ui.theme.AppSettings
+import com.example.ui.theme.ThemeMode
+import com.example.ui.theme.AppLanguage
+
 val PrimaryIndigo = Color(0xFF54578C)
 val SecondaryTeal = Color(0xFF1A5F7A)
 val SurfaceGray = Color(0xFFF7F9FB)
@@ -39,6 +48,9 @@ fun StudentProfileScreen(
     onNavigateToProgress: () -> Unit,
     onNavigateToQuizzes: () -> Unit
 ) {
+    var showThemeDialog by remember { mutableStateOf(false) }
+    var showLanguageDialog by remember { mutableStateOf(false) }
+
     val isDark = isSystemInDarkTheme()
     val bgColor = if (isDark) Color(0xFF121216) else SurfaceGray
     val cardColor = if (isDark) Color(0xFF1E1E22) else CardWhite
@@ -206,16 +218,18 @@ fun StudentProfileScreen(
                         HorizontalDivider(color = if (isDark) Color.White.copy(alpha=0.1f) else Color(0xFFF0F2F5))
                         ProfileMenuItem(
                             icon = Icons.Default.Palette,
-                            text = "অ্যাপের থিম",
+                            text = if (AppSettings.appLanguage == AppLanguage.BENGALI) "অ্যাপের থিম" else "App Theme",
                             iconTint = PrimaryIndigo,
-                            textColor = textPrimary
+                            textColor = textPrimary,
+                            onClick = { showThemeDialog = true }
                         )
                         HorizontalDivider(color = if (isDark) Color.White.copy(alpha=0.1f) else Color(0xFFF0F2F5))
                         ProfileMenuItem(
                             icon = Icons.Default.Language,
-                            text = "ভাষা (Language)",
+                            text = if (AppSettings.appLanguage == AppLanguage.BENGALI) "ভাষা (Language)" else "Language (ভাষা)",
                             iconTint = PrimaryIndigo,
-                            textColor = textPrimary
+                            textColor = textPrimary,
+                            onClick = { showLanguageDialog = true }
                         )
                         HorizontalDivider(color = if (isDark) Color.White.copy(alpha=0.1f) else Color(0xFFF0F2F5))
                         ProfileMenuItem(
@@ -239,6 +253,63 @@ fun StudentProfileScreen(
             
             item { Spacer(modifier = Modifier.height(24.dp)) }
         }
+    }
+
+    if (showThemeDialog) {
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = { Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "থিম নির্বাচন করুন" else "Select Theme") },
+            text = {
+                Column {
+                    Row(modifier = Modifier.fillMaxWidth().clickable { AppSettings.themeMode = ThemeMode.LIGHT; showThemeDialog = false }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = AppSettings.themeMode == ThemeMode.LIGHT, onClick = { AppSettings.themeMode = ThemeMode.LIGHT; showThemeDialog = false })
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "লাইট মোড" else "Light Mode", color = textPrimary)
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().clickable { AppSettings.themeMode = ThemeMode.DARK; showThemeDialog = false }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = AppSettings.themeMode == ThemeMode.DARK, onClick = { AppSettings.themeMode = ThemeMode.DARK; showThemeDialog = false })
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "ডার্ক মোড" else "Dark Mode", color = textPrimary)
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().clickable { AppSettings.themeMode = ThemeMode.SYSTEM; showThemeDialog = false }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = AppSettings.themeMode == ThemeMode.SYSTEM, onClick = { AppSettings.themeMode = ThemeMode.SYSTEM; showThemeDialog = false })
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "সিস্টেম ডিফল্ট" else "System Default", color = textPrimary)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showThemeDialog = false }) {
+                    Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "বাতিল" else "Cancel")
+                }
+            }
+        )
+    }
+
+    if (showLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            title = { Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "ভাষা নির্বাচন করুন" else "Select Language") },
+            text = {
+                Column {
+                    Row(modifier = Modifier.fillMaxWidth().clickable { AppSettings.appLanguage = AppLanguage.ENGLISH; showLanguageDialog = false }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = AppSettings.appLanguage == AppLanguage.ENGLISH, onClick = { AppSettings.appLanguage = AppLanguage.ENGLISH; showLanguageDialog = false })
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("English", color = textPrimary)
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().clickable { AppSettings.appLanguage = AppLanguage.BENGALI; showLanguageDialog = false }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = AppSettings.appLanguage == AppLanguage.BENGALI, onClick = { AppSettings.appLanguage = AppLanguage.BENGALI; showLanguageDialog = false })
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("বাংলা", color = textPrimary)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) {
+                    Text(if (AppSettings.appLanguage == AppLanguage.BENGALI) "বাতিল" else "Cancel")
+                }
+            }
+        )
     }
 }
 
