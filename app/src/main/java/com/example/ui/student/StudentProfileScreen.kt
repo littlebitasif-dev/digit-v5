@@ -50,6 +50,7 @@ fun StudentProfileScreen(
 ) {
     var showThemeDialog by remember { mutableStateOf(false) }
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showBadgesDialog by remember { mutableStateOf(false) }
 
     val isDark = isSystemInDarkTheme()
     val bgColor = if (isDark) Color(0xFF121216) else SurfaceGray
@@ -128,7 +129,7 @@ fun StudentProfileScreen(
                                 }
                             }
                             
-                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { /* See all badges */ }) {
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { showBadgesDialog = true }) {
                                 Text("সবগুলো দেখুন", fontSize = 12.sp, color = PrimaryIndigo, fontWeight = FontWeight.Medium)
                                 Icon(Icons.Default.ChevronRight, contentDescription = null, tint = PrimaryIndigo, modifier = Modifier.size(16.dp))
                             }
@@ -310,6 +311,10 @@ fun StudentProfileScreen(
                 }
             }
         )
+    }
+
+    if (showBadgesDialog) {
+        BadgesDialog(onDismiss = { showBadgesDialog = false })
     }
 }
 

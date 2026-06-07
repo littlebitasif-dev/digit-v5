@@ -18,8 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.alpha
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.PopupProperties
 import com.example.ui.student.NavyBlue
 import com.example.ui.theme.*
+import com.example.ui.quiz.QuizStateManager
 
 import com.example.ui.components.DigitTabHeader
 
@@ -34,6 +39,15 @@ fun TeacherQuizzesScreen(
 ) {
     val isDark = isSystemInDarkTheme()
     val bgCol = if (isDark) Color(0xFF191C1D) else Color(0xFFF8F9FA)
+    
+    var editingQuiz by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+
+    if (editingQuiz != null) {
+        QuizEditorPanel(
+            quizTitleEn = editingQuiz!!,
+            onDismiss = { editingQuiz = null }
+        )
+    }
 
     Scaffold(
         containerColor = bgCol,
@@ -86,7 +100,8 @@ fun TeacherQuizzesScreen(
                     titleEn = "Lesson Quizzes",
                     icon = Icons.Outlined.MenuBook,
                     iconCol = PrimaryContainer,
-                    iconTint = Primary
+                    iconTint = Primary,
+                    onEditClick = { editingQuiz = "Lesson Quizzes" }
                 )
             }
             
@@ -96,7 +111,8 @@ fun TeacherQuizzesScreen(
                     titleEn = "Fill in the Blanks",
                     icon = Icons.Outlined.Edit,
                     iconCol = SecondaryContainer,
-                    iconTint = Primary
+                    iconTint = Primary,
+                    onEditClick = { editingQuiz = "Fill in the Blanks" }
                 )
             }
             
@@ -106,7 +122,8 @@ fun TeacherQuizzesScreen(
                     titleEn = "Math Solver",
                     icon = Icons.Outlined.Calculate,
                     iconCol = TertiaryContainer,
-                    iconTint = if (isDark) Color(0xFFF9E28B) else Color(0xFF4B3F00)
+                    iconTint = if (isDark) Color(0xFFF9E28B) else Color(0xFF4B3F00),
+                    onEditClick = { editingQuiz = "Math Solver" }
                 )
             }
             
@@ -116,7 +133,8 @@ fun TeacherQuizzesScreen(
                     titleEn = "Vocabulary Memory",
                     icon = Icons.Outlined.Psychology,
                     iconCol = PrimaryContainer,
-                    iconTint = Primary
+                    iconTint = Primary,
+                    onEditClick = { editingQuiz = "Vocabulary Memory" }
                 )
             }
             
@@ -126,7 +144,8 @@ fun TeacherQuizzesScreen(
                     titleEn = "Times Table Blitz",
                     icon = Icons.Outlined.Timer,
                     iconCol = SecondaryContainer,
-                    iconTint = Primary
+                    iconTint = Primary,
+                    onEditClick = { editingQuiz = "Times Table Blitz" }
                 )
             }
         }
@@ -140,14 +159,21 @@ fun EditableQuizCard(
     titleEn: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     iconCol: Color,
-    iconTint: Color
+    iconTint: Color,
+    onEditClick: () -> Unit
 ) {
     val isDark = isSystemInDarkTheme()
+    val quizState = QuizStateManager.getState(titleEn)
+    val isLocked = quizState.isLocked
+    val isHidden = quizState.isHidden
+    var showMenu by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
     val cardBg = if (isDark) Color(0xFF232528) else Color(0xFFFFFFFF)
     val cardBorder = if (isDark) Color(0xFF33353A) else Color(0xFFE1E3E4)
+    val alphaModifier = if (isHidden) 0.5f else 1f
     
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().alpha(alphaModifier),
         shape = RoundedCornerShape(32.dp),
         color = cardBg,
         shadowElevation = 2.dp,
@@ -166,7 +192,7 @@ fun EditableQuizCard(
                 modifier = Modifier.padding(24.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Top,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Box(
@@ -190,7 +216,7 @@ fun EditableQuizCard(
                         shape = CircleShape,
                         color = SurfaceContainer,
                         modifier = Modifier.weight(1f).height(48.dp),
-                        onClick = {}
+                        onClick = onEditClick
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                             Icon(Icons.Outlined.Edit, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(20.dp))
@@ -198,16 +224,37 @@ fun EditableQuizCard(
                             Text("এডিট (Edit)", color = OnSurfaceVariant, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         }
                     }
+                    
+                    // Quick Action Toggles
                     Surface(
                         shape = CircleShape,
-                        color = Error.copy(alpha = 0.1f),
-                        modifier = Modifier.weight(1f).height(48.dp),
-                        onClick = {}
+                        color = if (isLocked) Error.copy(alpha=0.1f) else SurfaceContainer,
+                        modifier = Modifier.height(48.dp).width(48.dp),
+                        onClick = { QuizStateManager.toggleLock(titleEn) }
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                            Icon(Icons.Default.Delete, contentDescription = null, tint = Error, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("মুছে ফেলুন", color = Error, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                if (isLocked) Icons.Outlined.Lock else Icons.Outlined.LockOpen, 
+                                contentDescription = "Toggle Lock", 
+                                tint = if (isLocked) Error else OnSurfaceVariant, 
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+
+                    Surface(
+                        shape = CircleShape,
+                        color = if (isHidden) SecondaryContainer else SurfaceContainer,
+                        modifier = Modifier.height(48.dp).width(48.dp),
+                        onClick = { QuizStateManager.toggleHide(titleEn) }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                if (isHidden) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility, 
+                                contentDescription = "Toggle Visibility", 
+                                tint = if (isHidden) OnSecondaryContainer else OnSurfaceVariant, 
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     }
                 }

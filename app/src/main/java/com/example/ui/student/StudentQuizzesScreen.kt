@@ -21,10 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.alpha
 
 import com.example.ui.theme.isAppInDarkTheme as isSystemInDarkTheme
 import com.example.ui.components.DigitTabHeader
 import androidx.compose.material.icons.outlined.Notifications
+import com.example.ui.quiz.QuizStateManager
 
 internal val NavyBlue: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFFBFC2FE) else Color(0xFF54578C)
 private val DeepNavy: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFF3C3F73) else Color(0xFF3B3E66)
@@ -293,8 +295,13 @@ fun GameCard(
     buttonTextColor: Color,
     onClick: () -> Unit
 ) {
+    val quizState = QuizStateManager.getState(titleEn)
+    if (quizState.isHidden) return
+
+    val isLocked = quizState.isLocked
+
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().alpha(if (isLocked) 0.6f else 1f),
         shape = RoundedCornerShape(32.dp),
         color = CardBg,
         shadowElevation = 0.dp,
@@ -330,20 +337,25 @@ fun GameCard(
                     Text(titleBn, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = NavyBlue)
                     Text(titleEn, fontSize = 14.sp, color = NavyBlue.copy(alpha = 0.7f))
                 }
-                if (level != null) {
+                if (level != null && !isLocked) {
                     Text(level, fontSize = 14.sp, color = NavyBlue, fontWeight = FontWeight.Medium)
+                } else if (isLocked) {
+                    Icon(Icons.Outlined.Lock, contentDescription = "Locked", tint = NavyBlue, modifier = Modifier.size(20.dp))
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = onClick,
+                onClick = { if (!isLocked) onClick() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = buttonBg, contentColor = buttonTextColor)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isLocked) Color.Gray.copy(alpha = 0.3f) else buttonBg, 
+                    contentColor = if (isLocked) NavyBlue.copy(alpha = 0.5f) else buttonTextColor
+                )
             ) {
-                Text(buttonText, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(if (isLocked) "Locked" else buttonText, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
         }
         }

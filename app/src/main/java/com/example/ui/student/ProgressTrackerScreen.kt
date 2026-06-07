@@ -18,6 +18,11 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -241,6 +246,8 @@ fun SubjectProgressItemNew(label: String, progress: Float, percentage: String, t
 @Composable
 fun RecentBadgesSection() {
     val isDark = isSystemInDarkTheme()
+    var showBadgesDialog by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -252,7 +259,12 @@ fun RecentBadgesSection() {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Recent Badges", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = ProgressPrimaryText)
-                Text("See all", fontSize = 14.sp, color = if (isDark) Color(0xFFA9ADFF) else Indigo)
+                Text(
+                    "See all",
+                    fontSize = 14.sp,
+                    color = if (isDark) Color(0xFFA9ADFF) else Indigo,
+                    modifier = Modifier.clickable { showBadgesDialog = true }
+                )
             }
             Spacer(modifier = Modifier.height(24.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
@@ -276,6 +288,10 @@ fun RecentBadgesSection() {
                 )
             }
         }
+    }
+
+    if (showBadgesDialog) {
+        BadgesDialog(onDismiss = { showBadgesDialog = false })
     }
 }
 

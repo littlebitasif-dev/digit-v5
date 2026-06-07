@@ -28,67 +28,76 @@ fun DigitTabHeader(
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     val isDark = isSystemInDarkTheme()
-    val pillBg = if (isDark) Color(0xFF282A2D).copy(alpha = 0.9f) else Color.White.copy(alpha = 0.9f)
+    val pillBg = if (isDark) Color(0xFF282A2D) else Color.White
     val brandColor = if (isDark) Color(0xFF787DB9) else Color(0xFF54578c)
-    val dividerColor = if (isDark) Color.White.copy(alpha = 0.1f) else Color.Black.copy(alpha = 0.1f)
+    val dividerColor = if (isDark) Color(0xFF4A4C50) else Color(0xFFE0E0E0)
+    val statusBarBg = if (isDark) Color(0xFF1E1E22) else Color(0xFFF0F0F0)
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 36.dp, bottom = 12.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Surface(
-            shape = RoundedCornerShape(percent = 50),
-            color = pillBg.copy(alpha = 0.95f),
-            shadowElevation = if (isDark) 0.dp else 4.dp,
-            border = if (isDark) androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.05f)) else null,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    Column(modifier = modifier.fillMaxWidth()) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsTopHeight(WindowInsets.statusBars)
+                .background(statusBarBg)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 12.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            Surface(
+                shape = RoundedCornerShape(percent = 50),
+                color = pillBg,
+                shadowElevation = if (isDark) 0.dp else 4.dp,
+                border = if (isDark) androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF3C3F45)) else null,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
             ) {
-                // Leading: Logo + Wordmark
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color.Transparent),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                            contentDescription = "Digit Logo",
-                            modifier = Modifier.fillMaxSize(1.5f)
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Leading: Logo + Wordmark
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.Transparent),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                                contentDescription = "Digit Logo",
+                                modifier = Modifier.fillMaxSize(1.5f)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Digit",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Black,
+                            color = brandColor,
+                            fontFamily = FontFamily.SansSerif,
+                            letterSpacing = (-0.5).sp
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Digit",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Black,
-                        color = brandColor,
-                        fontFamily = FontFamily.SansSerif,
-                        letterSpacing = (-0.5).sp
-                    )
-                }
-                
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Divider
-                    Box(
-                        modifier = Modifier
-                            .height(24.dp)
-                            .width(1.dp)
-                            .background(dividerColor)
-                    )
                     
-                    Spacer(modifier = Modifier.width(16.dp))
-                    
-                    // Trailing section
-                    actions()
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Divider
+                        Box(
+                            modifier = Modifier
+                                .height(24.dp)
+                                .width(1.dp)
+                                .background(dividerColor)
+                        )
+                        
+                        Spacer(modifier = Modifier.width(16.dp))
+                        
+                        // Trailing section
+                        actions()
+                    }
                 }
             }
         }

@@ -130,6 +130,11 @@ fun StudentDashboardScreen(
             item {
                 DailyActivitySlideshow(onNavigateToLesson)
             }
+            
+            // Weekly Challenge
+            item {
+                WeeklyChallengeSection()
+            }
 
             // Daily Goal
             item {

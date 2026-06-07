@@ -36,10 +36,10 @@ private val LessonPrimaryText: Color @Composable get() = if (isSystemInDarkTheme
 private val LessonSecondaryText: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFFC4C7C5) else Color(0xFF5E6368)
 private val LessonBorder: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFF3F4245) else Color(0xFFEEF0F2)
 
-private val LessonBlueText = Color(0xFF3C3F73)
-private val LessonLavender = Color(0xFFE0E0FF)
-private val LessonHeroBg = Color(0xFF3C3F73)
-private val LessonTeal = Color(0xFF00695C)
+private val LessonBlueText: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFFC7CDFF) else Color(0xFF3C3F73)
+private val LessonLavender: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFF2E3150) else Color(0xFFE0E0FF)
+private val LessonHeroBg: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFF2E3150) else Color(0xFF3C3F73)
+private val LessonTeal: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFF14B8A6) else Color(0xFF00695C)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,18 +195,18 @@ fun RecentlyViewedItem(titleBn: String, titleEn: String, icon: androidx.compose.
         shadowElevation = 0.dp,
         border = BorderStroke(1.dp, LessonBorder)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(16.dp).heightIn(min = 140.dp)) {
             Box(
-                modifier = Modifier.size(40.dp).background(LessonBorder, CircleShape),
+                modifier = Modifier.size(40.dp).background(LessonLavender, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(icon, contentDescription = null, tint = LessonBlueText, modifier = Modifier.size(20.dp))
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(titleBn, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = LessonPrimaryText)
+            Text(titleBn, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = LessonPrimaryText, maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(titleEn, fontSize = 12.sp, color = LessonSecondaryText)
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(titleEn, fontSize = 12.sp, color = LessonSecondaryText, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+            Spacer(modifier = Modifier.weight(1f))
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
