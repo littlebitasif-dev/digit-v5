@@ -1,17 +1,21 @@
 package com.example.ui.teacher
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,12 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.activity.compose.BackHandler
 import com.example.ui.theme.isAppInDarkTheme
 
 data class SheetColumn(val title: String, val weight: Float)
@@ -36,61 +42,97 @@ fun QuizEditorPanel(
 ) {
     var rows by remember { mutableStateOf(List(3) { List(getColsForQuiz(quizTitleEn).size) { "" } }) }
     val isDark = isAppInDarkTheme()
-    val bgCol = if (isDark) Color(0xFF191C1D) else Color.White
+    val bgCol = if (isDark) Color(0xFF191C1D) else Color(0xFFF8F9FA)
     val onBgCol = if (isDark) Color.White else Color.Black
     val borderCol = if (isDark) Color(0xFF33353A) else Color(0xFFE1E3E4)
-    val headerCol = if (isDark) Color(0xFF232528) else Color(0xFFF0F2F4)
+    val tableHeaderBg = if (isDark) Color(0xFF232528) else Color(0xFF1D1B20)
+    val tableHeaderFg = Color.White
+    val buttonBg = Color(0xFF54578C)
+    
+    val bnTitle = when (quizTitleEn) {
+        "Lesson Quizzes" -> "পাঠ ভিত্তিক কুইজ"
+        "Fill in the Blanks" -> "শূন্যস্থান পূরণ"
+        "Math Solver" -> "গণিত সমাধানকারী"
+        "Vocabulary Memory" -> "শব্দভাণ্ডার মেমরি"
+        else -> quizTitleEn
+    }
 
     val cols = getColsForQuiz(quizTitleEn)
 
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+    BackHandler(onBack = onDismiss)
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = bgCol
     ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = bgCol
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                // Header
-                Row(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Top header bar (grey rounded pill)
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    color = if (isDark) Color(0xFF2D2F33) else Color.White,
+                    shadowElevation = 2.dp,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth(0.9f)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(
-                        text = "Editing: $quizTitleEn",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = onBgCol
-                    )
-                    Row {
-                        IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = "Close", tint = onBgCol)
+                    Box(modifier = Modifier.fillMaxWidth().height(56.dp)) {
+                        IconButton(
+                            onClick = onDismiss,
+                            modifier = Modifier.align(Alignment.CenterStart).padding(start = 8.dp)
+                        ) {
+                            Icon(Icons.Default.Close, contentDescription = "Close", tint = if (isDark) Color.LightGray else Color.DarkGray)
                         }
+                        Text(
+                            text = "সম্পাদনা: $bnTitle",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = onBgCol,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
                     }
                 }
 
-                Divider(color = borderCol)
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // Toolbar
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(onClick = { rows = rows + listOf(List(cols.size) { "" }) }) {
-                        Icon(Icons.Default.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Add Row")
+                // Action Buttons 2x2 Grid
+                Column(modifier = Modifier.fillMaxWidth(0.9f)) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        EditorActionButton(
+                            icon = Icons.Default.ContentPaste,
+                            text = "বাল্ক পেস্ট",
+                            modifier = Modifier.weight(1f),
+                            buttonBg = buttonBg
+                        ) { /* TODO */ }
+                        EditorActionButton(
+                            icon = Icons.Default.Add,
+                            text = "নতুন সারি",
+                            modifier = Modifier.weight(1f),
+                            buttonBg = buttonBg
+                        ) { rows = rows + listOf(List(cols.size) { "" }) }
                     }
-                    Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E8E62))) {
-                        Icon(Icons.Default.Save, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Save Changes")
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        EditorActionButton(
+                            icon = Icons.Default.FileDownload,
+                            text = "ইমপোর্ট",
+                            modifier = Modifier.weight(1f),
+                            buttonBg = buttonBg
+                        ) { /* TODO */ }
+                        EditorActionButton(
+                            icon = Icons.Default.Save,
+                            text = "সংরক্ষণ",
+                            modifier = Modifier.weight(1f),
+                            buttonBg = buttonBg
+                        ) { onDismiss() }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
 
                 // Spreadsheet Area
                 Box(
@@ -100,87 +142,93 @@ fun QuizEditorPanel(
                         .padding(horizontal = 16.dp)
                 ) {
                     val scrollState = rememberScrollState()
-                    Column(modifier = Modifier.horizontalScroll(scrollState)) {
-                        // Header Row
-                        Row(
-                            modifier = Modifier
-                                .background(headerCol, RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                                .border(1.dp, borderCol, RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                        ) {
-                            cols.forEach { col ->
-                                Box(
-                                    modifier = Modifier
-                                        .width(col.weight.dp)
-                                        .padding(12.dp)
-                                ) {
-                                    Text(
-                                        text = col.title,
-                                        fontWeight = FontWeight.Bold,
-                                        color = onBgCol,
-                                        fontSize = 14.sp
-                                    )
-                                }
-                            }
-                            Box(modifier = Modifier.width(60.dp).padding(12.dp)) {
-                                Text("Actions", fontWeight = FontWeight.Bold, color = onBgCol, fontSize = 14.sp)
-                            }
-                        }
-
-                        // Data Rows
-                        LazyColumn(
-                            modifier = Modifier
-                                .border(1.dp, borderCol, RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
-                                .heightIn(max = 2000.dp)
-                        ) {
-                            items(rows.size) { r ->
-                                Row(
-                                    modifier = Modifier.border(0.5.dp, borderCol),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    cols.forEachIndexed { c, col ->
-                                        Box(
-                                            modifier = Modifier
-                                                .width(col.weight.dp)
-                                                .border(0.5.dp, borderCol)
-                                                .heightIn(min = 50.dp)
-                                                .padding(horizontal = 8.dp),
-                                            contentAlignment = Alignment.CenterStart
-                                        ) {
-                                            BasicTextField(
-                                                value = rows[r][c],
-                                                onValueChange = { newVal ->
-                                                    val newRows = rows.toMutableList()
-                                                    val newRow = newRows[r].toMutableList()
-                                                    newRow[c] = newVal
-                                                    newRows[r] = newRow
-                                                    rows = newRows
-                                                },
-                                                textStyle = TextStyle(color = onBgCol, fontSize = 14.sp),
-                                                modifier = Modifier.fillMaxWidth()
-                                            )
-                                        }
-                                    }
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = if (isDark) Color(0xFF1E1E22) else Color.White,
+                        border = BorderStroke(1.dp, borderCol),
+                        shadowElevation = 2.dp,
+                        modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)
+                    ) {
+                        Column(modifier = Modifier.horizontalScroll(scrollState)) {
+                            // Header Row
+                            Row(
+                                modifier = Modifier
+                                    .background(tableHeaderBg)
+                                    .fillMaxWidth()
+                            ) {
+                                cols.forEach { col ->
                                     Box(
                                         modifier = Modifier
-                                            .width(60.dp)
-                                            .border(0.5.dp, borderCol)
-                                            .heightIn(min = 50.dp),
-                                        contentAlignment = Alignment.Center
+                                            .width(col.weight.dp)
+                                            .padding(16.dp)
                                     ) {
-                                        IconButton(
-                                            onClick = {
-                                                val newRows = rows.toMutableList()
-                                                newRows.removeAt(r)
-                                                rows = newRows
-                                            },
-                                            modifier = Modifier.size(32.dp)
+                                        Text(
+                                            text = col.title,
+                                            fontWeight = FontWeight.Bold,
+                                            color = tableHeaderFg,
+                                            fontSize = 15.sp
+                                        )
+                                    }
+                                }
+                                Box(modifier = Modifier.width(100.dp).padding(16.dp), contentAlignment = Alignment.Center) {
+                                    Text("Actions", fontWeight = FontWeight.Bold, color = tableHeaderFg, fontSize = 15.sp)
+                                }
+                            }
+
+                            // Data Rows
+                            LazyColumn(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                items(rows.size) { r ->
+                                    Row(
+                                        modifier = Modifier.border(0.5.dp, borderCol),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        cols.forEachIndexed { c, col ->
+                                            Box(
+                                                modifier = Modifier
+                                                    .width(col.weight.dp)
+                                                    .border(0.5.dp, borderCol)
+                                                    .heightIn(min = 60.dp)
+                                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                                contentAlignment = Alignment.CenterStart
+                                            ) {
+                                                BasicTextField(
+                                                    value = rows[r][c],
+                                                    onValueChange = { newVal ->
+                                                        val newRows = rows.toMutableList()
+                                                        val newRow = newRows[r].toMutableList()
+                                                        newRow[c] = newVal
+                                                        newRows[r] = newRow
+                                                        rows = newRows
+                                                    },
+                                                    textStyle = TextStyle(color = if (isDark) Color.LightGray else Color.DarkGray, fontSize = 15.sp),
+                                                    modifier = Modifier.fillMaxWidth()
+                                                )
+                                            }
+                                        }
+                                        Box(
+                                            modifier = Modifier
+                                                .width(100.dp)
+                                                .border(0.5.dp, borderCol)
+                                                .heightIn(min = 60.dp),
+                                            contentAlignment = Alignment.Center
                                         ) {
-                                            Icon(
-                                                Icons.Default.Delete,
-                                                contentDescription = "Delete Row",
-                                                tint = Color.Red,
-                                                modifier = Modifier.size(16.dp)
-                                            )
+                                            IconButton(
+                                                onClick = {
+                                                    val newRows = rows.toMutableList()
+                                                    newRows.removeAt(r)
+                                                    rows = newRows
+                                                },
+                                                modifier = Modifier.size(40.dp)
+                                            ) {
+                                                Icon(
+                                                    Icons.Default.DeleteOutline,
+                                                    contentDescription = "Delete Row",
+                                                    tint = Color(0xFFD32F2F),
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -188,9 +236,27 @@ fun QuizEditorPanel(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    } // end QuizEditorPanel
+
+@Composable
+fun EditorActionButton(
+    icon: ImageVector,
+    text: String,
+    modifier: Modifier = Modifier,
+    buttonBg: Color,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(52.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonBg),
+        shape = CircleShape
+    ) {
+        Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 

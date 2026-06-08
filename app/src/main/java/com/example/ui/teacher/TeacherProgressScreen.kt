@@ -66,7 +66,7 @@ fun TeacherProgressScreen(
             )
         ) {
             item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     Text("Class Progress", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Primary, lineHeight = 40.sp)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text("Analyze your students' performance.", fontSize = 14.sp, color = OnSurfaceVariant)
@@ -74,7 +74,7 @@ fun TeacherProgressScreen(
             }
             
             item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     DashboardStatCard(
                         title = "AVERAGE SCORE",
                         value = "85%",
@@ -96,11 +96,11 @@ fun TeacherProgressScreen(
             }
 
             item {
-                Text("Recent Activity", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Primary, modifier = Modifier.padding(horizontal = 24.dp))
+                Text("Recent Activity", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Primary, modifier = Modifier.padding(horizontal = 16.dp))
             }
 
             item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     StudentActivityCard(
                         studentName = "Rahul Das",
                         activity = "Completed 'Solar System Quiz'",

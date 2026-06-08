@@ -42,114 +42,116 @@ fun TeacherQuizzesScreen(
     
     var editingQuiz by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
 
-    if (editingQuiz != null) {
-        QuizEditorPanel(
-            quizTitleEn = editingQuiz!!,
-            onDismiss = { editingQuiz = null }
-        )
-    }
-
-    Scaffold(
-        containerColor = bgCol,
-        topBar = {
-            TeacherHeader(
-                onNavigateToAlerts = onNavigateToAlerts,
-                onNavigateToProfile = onNavigateToProfile
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { /* TODO Navigate to create quiz */ },
-                containerColor = Primary,
-                contentColor = OnPrimary,
-                icon = { Icon(Icons.Default.Add, contentDescription = "Create Quiz") },
-                text = { Text("নতুন কুইজ", fontWeight = FontWeight.Bold) }
-            )
-        },
-        bottomBar = {
-            TeacherBottomNavBar(
-                currentRoute = "Quizzes",
-                onNavigateToHome = onNavigateToHome,
-                onNavigateToLessons = onNavigateToLessons,
-                onNavigateToProgress = onNavigateToProgress,
-                onNavigateToQuizzes = {}
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 24.dp,
-                end = 24.dp,
-                top = paddingValues.calculateTopPadding() + 24.dp,
-                bottom = paddingValues.calculateBottomPadding() + 80.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                Column {
-                    Text("কুইজ ম্যানেজমেন্ট", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Primary)
-                    Text("Manage Quizzes", fontSize = 14.sp, color = OnSurfaceVariant)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = bgCol,
+            topBar = {
+                TeacherHeader(
+                    onNavigateToAlerts = onNavigateToAlerts,
+                    onNavigateToProfile = onNavigateToProfile
+                )
+            },
+            floatingActionButton = {
+                ExtendedFloatingActionButton(
+                    onClick = { /* TODO Navigate to create quiz */ },
+                    containerColor = Primary,
+                    contentColor = OnPrimary,
+                    icon = { Icon(Icons.Default.Add, contentDescription = "Create Quiz") },
+                    text = { Text("নতুন কুইজ", fontWeight = FontWeight.Bold) }
+                )
+            },
+            bottomBar = {
+                TeacherBottomNavBar(
+                    currentRoute = "Quizzes",
+                    onNavigateToHome = onNavigateToHome,
+                    onNavigateToLessons = onNavigateToLessons,
+                    onNavigateToProgress = onNavigateToProgress,
+                    onNavigateToQuizzes = {}
+                )
+            }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding() + 24.dp,
+                    bottom = paddingValues.calculateBottomPadding() + 80.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    Column {
+                        Text("কুইজ ম্যানেজমেন্ট", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Primary)
+                        Text("Manage Quizzes", fontSize = 14.sp, color = OnSurfaceVariant)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                
+                item {
+                    EditableQuizCard(
+                        titleBn = "পাঠ ভিত্তিক কুইজ",
+                        titleEn = "Lesson Quizzes",
+                        icon = Icons.Outlined.MenuBook,
+                        iconCol = PrimaryContainer,
+                        iconTint = Primary,
+                        onEditClick = { editingQuiz = "Lesson Quizzes" }
+                    )
+                }
+                
+                item {
+                    EditableQuizCard(
+                        titleBn = "শূন্যস্থান পূরণ",
+                        titleEn = "Fill in the Blanks",
+                        icon = Icons.Outlined.Edit,
+                        iconCol = SecondaryContainer,
+                        iconTint = Primary,
+                        onEditClick = { editingQuiz = "Fill in the Blanks" }
+                    )
+                }
+                
+                item {
+                    EditableQuizCard(
+                        titleBn = "অংক সমাধান",
+                        titleEn = "Math Solver",
+                        icon = Icons.Outlined.Calculate,
+                        iconCol = TertiaryContainer,
+                        iconTint = if (isDark) Color(0xFFF9E28B) else Color(0xFF4B3F00),
+                        onEditClick = { editingQuiz = "Math Solver" }
+                    )
+                }
+                
+                item {
+                    EditableQuizCard(
+                        titleBn = "শব্দার্থ মনে রাখা",
+                        titleEn = "Vocabulary Memory",
+                        icon = Icons.Outlined.Psychology,
+                        iconCol = PrimaryContainer,
+                        iconTint = Primary,
+                        onEditClick = { editingQuiz = "Vocabulary Memory" }
+                    )
+                }
+                
+                item {
+                    EditableQuizCard(
+                        titleBn = "নামতা মুখস্ত করা",
+                        titleEn = "Times Table Blitz",
+                        icon = Icons.Outlined.Timer,
+                        iconCol = SecondaryContainer,
+                        iconTint = Primary,
+                        onEditClick = null
+                    )
+                }
             }
-            
-            item {
-                EditableQuizCard(
-                    titleBn = "পাঠ ভিত্তিক কুইজ",
-                    titleEn = "Lesson Quizzes",
-                    icon = Icons.Outlined.MenuBook,
-                    iconCol = PrimaryContainer,
-                    iconTint = Primary,
-                    onEditClick = { editingQuiz = "Lesson Quizzes" }
-                )
-            }
-            
-            item {
-                EditableQuizCard(
-                    titleBn = "শূন্যস্থান পূরণ",
-                    titleEn = "Fill in the Blanks",
-                    icon = Icons.Outlined.Edit,
-                    iconCol = SecondaryContainer,
-                    iconTint = Primary,
-                    onEditClick = { editingQuiz = "Fill in the Blanks" }
-                )
-            }
-            
-            item {
-                EditableQuizCard(
-                    titleBn = "অংক সমাধান",
-                    titleEn = "Math Solver",
-                    icon = Icons.Outlined.Calculate,
-                    iconCol = TertiaryContainer,
-                    iconTint = if (isDark) Color(0xFFF9E28B) else Color(0xFF4B3F00),
-                    onEditClick = { editingQuiz = "Math Solver" }
-                )
-            }
-            
-            item {
-                EditableQuizCard(
-                    titleBn = "শব্দার্থ মনে রাখা",
-                    titleEn = "Vocabulary Memory",
-                    icon = Icons.Outlined.Psychology,
-                    iconCol = PrimaryContainer,
-                    iconTint = Primary,
-                    onEditClick = { editingQuiz = "Vocabulary Memory" }
-                )
-            }
-            
-            item {
-                EditableQuizCard(
-                    titleBn = "নামতা মুখস্ত করা",
-                    titleEn = "Times Table Blitz",
-                    icon = Icons.Outlined.Timer,
-                    iconCol = SecondaryContainer,
-                    iconTint = Primary,
-                    onEditClick = { editingQuiz = "Times Table Blitz" }
-                )
-            }
+        } // end Scaffold
+
+        if (editingQuiz != null) {
+            QuizEditorPanel(
+                quizTitleEn = editingQuiz!!,
+                onDismiss = { editingQuiz = null }
+            )
         }
-    }
+    } // end Box
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -160,7 +162,7 @@ fun EditableQuizCard(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     iconCol: Color,
     iconTint: Color,
-    onEditClick: () -> Unit
+    onEditClick: (() -> Unit)? = null
 ) {
     val isDark = isSystemInDarkTheme()
     val quizState = QuizStateManager.getState(titleEn)
@@ -212,17 +214,21 @@ fun EditableQuizCard(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Surface(
-                        shape = CircleShape,
-                        color = SurfaceContainer,
-                        modifier = Modifier.weight(1f).height(48.dp),
-                        onClick = onEditClick
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                            Icon(Icons.Outlined.Edit, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("এডিট (Edit)", color = OnSurfaceVariant, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    if (onEditClick != null) {
+                        Surface(
+                            shape = CircleShape,
+                            color = SurfaceContainer,
+                            modifier = Modifier.weight(1f).height(48.dp),
+                            onClick = onEditClick
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                                Icon(Icons.Outlined.Edit, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(20.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("এডিট (Edit)", color = OnSurfaceVariant, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            }
                         }
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                     
                     // Quick Action Toggles

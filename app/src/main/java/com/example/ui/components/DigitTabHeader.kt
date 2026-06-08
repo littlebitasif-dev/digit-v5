@@ -31,7 +31,7 @@ fun DigitTabHeader(
     val pillBg = if (isDark) Color(0xFF282A2D) else Color.White
     val brandColor = if (isDark) Color(0xFF787DB9) else Color(0xFF54578c)
     val dividerColor = if (isDark) Color(0xFF4A4C50) else Color(0xFFE0E0E0)
-    val statusBarBg = if (isDark) Color(0xFF1E1E22) else Color(0xFFF0F0F0)
+    val statusBarBg = Color.Transparent
 
     Column(modifier = modifier.fillMaxWidth()) {
         Spacer(

@@ -29,6 +29,8 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,9 +66,12 @@ fun TeacherDashboardScreen(
     onNavigateToAlerts: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {}
 ) {
-    Scaffold(
-        containerColor = SurfaceBg,
-        topBar = {
+    var editingMaterial by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            containerColor = SurfaceBg,
+            topBar = {
             TeacherHeader(
                 onNavigateToAlerts = onNavigateToAlerts,
                 onNavigateToProfile = onNavigateToProfile
@@ -98,7 +103,7 @@ fun TeacherDashboardScreen(
             // Manage Learning Materials
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
                 ) {
@@ -113,50 +118,54 @@ fun TeacherDashboardScreen(
             }
             item {
                 androidx.compose.foundation.lazy.LazyRow(
-                    contentPadding = PaddingValues(horizontal = 24.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item { ManageMaterialCard(title = "ফ্ল্যাশকার্ড", icon = Icons.Default.Style, iconCol = PrimaryContainer, iconTint = PrimaryFixed) }
-                    item { ManageMaterialCard(title = "গণিত সমাধান", icon = Icons.Outlined.Calculate, iconCol = SecondaryContainer, iconTint = Primary) }
-                    item { ManageMaterialCard(title = "শব্দার্থ", icon = Icons.Default.SortByAlpha, iconCol = TertiaryContainer, iconTint = if (isSystemInDarkTheme()) Color(0xFFF9E28B) else Color(0xFF4B3F00)) }
+                    item { 
+                        ManageMaterialCard(
+                            title = "জানা অজানা", 
+                            icon = Icons.Default.Lightbulb, 
+                            iconCol = PrimaryContainer, 
+                            iconTint = PrimaryFixed,
+                            onEditClick = { editingMaterial = "Did You Know" }
+                        ) 
+                    }
+                    item { 
+                        ManageMaterialCard(
+                            title = "কুইক কুইজ", 
+                            icon = Icons.Outlined.Quiz, 
+                            iconCol = TertiaryContainer, 
+                            iconTint = if (isSystemInDarkTheme()) Color(0xFFF9E28B) else Color(0xFF4B3F00),
+                            onEditClick = { editingMaterial = "Quick Quiz" }
+                        ) 
+                    }
+                    item { 
+                        ManageMaterialCard(
+                            title = "শব্দার্থ", 
+                            icon = Icons.Default.SortByAlpha, 
+                            iconCol = SecondaryContainer, 
+                            iconTint = Primary,
+                            onEditClick = { editingMaterial = "Word Meaning" }
+                        ) 
+                    }
+                    item { 
+                        ManageMaterialCard(
+                            title = "ফ্ল্যাশকার্ড", 
+                            icon = Icons.Default.Style, 
+                            iconCol = PrimaryContainer, 
+                            iconTint = PrimaryFixed,
+                            onEditClick = { editingMaterial = "Flashcards" }
+                        ) 
+                    }
                 }
             }
 
-            // Quick Actions
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    Column {
-                        Text("দ্রুত কাজ", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Primary)
-                        Text("Quick Actions", fontSize = 12.sp, color = OnSurfaceVariant)
-                    }
-                }
-            }
-            item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    Surface(
-                        shape = CircleShape,
-                        color = Color.Transparent,
-                        border = androidx.compose.foundation.BorderStroke(1.dp, Primary.copy(alpha = 0.4f)),
-                        modifier = Modifier.height(48.dp),
-                        onClick = onNavigateToLessonUpload
-                    ) {
-                        Row(modifier = Modifier.padding(horizontal = 24.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.AddCircleOutline, contentDescription = null, tint = Primary, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("লেসন যোগ করুন", color = Primary, fontWeight = FontWeight.Medium)
-                        }
-                    }
-                }
-            }
+
 
             // Recent Student Activity
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
                 ) {
@@ -170,7 +179,7 @@ fun TeacherDashboardScreen(
                 }
             }
             item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     // Card 1
                     Surface(
                         shape = RoundedCornerShape(32.dp),
@@ -237,7 +246,7 @@ fun TeacherDashboardScreen(
             // Pending Approvals
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
                 ) {
@@ -248,7 +257,7 @@ fun TeacherDashboardScreen(
                 }
             }
             item {
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     Surface(
                         shape = RoundedCornerShape(32.dp),
                         color = SurfaceCard,
@@ -299,10 +308,18 @@ fun TeacherDashboardScreen(
             item { Spacer(modifier = Modifier.height(32.dp)) }
         }
     }
+    
+    if (editingMaterial != null) {
+        MaterialEditorPanel(
+            materialTitleEn = editingMaterial!!,
+            onDismiss = { editingMaterial = null }
+        )
+    }
+}
 }
 
 @Composable
-fun ManageMaterialCard(title: String, icon: ImageVector, iconCol: Color, iconTint: Color) {
+fun ManageMaterialCard(title: String, icon: ImageVector, iconCol: Color, iconTint: Color, onEditClick: () -> Unit = {}) {
     Surface(
         modifier = Modifier.width(220.dp).height(200.dp),
         shape = RoundedCornerShape(32.dp),
@@ -326,7 +343,7 @@ fun ManageMaterialCard(title: String, icon: ImageVector, iconCol: Color, iconTin
                         shape = CircleShape,
                         color = SurfaceContainerHighest,
                         modifier = Modifier.weight(1f).height(40.dp),
-                        onClick = {}
+                        onClick = onEditClick
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                             Icon(Icons.Outlined.Edit, contentDescription = null, tint = OnSurfaceVariant, modifier = Modifier.size(16.dp))
