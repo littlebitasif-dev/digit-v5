@@ -1,6 +1,10 @@
 package com.example.ui.theme
 
 import android.os.Build
+import android.app.Activity
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.compose.foundation.isSystemInDarkTheme as systemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -102,6 +106,14 @@ fun MyApplicationTheme(
       darkTheme -> DarkColorScheme
       else -> LightColorScheme
     }
+
+  val view = LocalView.current
+  if (!view.isInEditMode) {
+      SideEffect {
+          val window = (view.context as Activity).window
+          WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+      }
+  }
 
   MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
